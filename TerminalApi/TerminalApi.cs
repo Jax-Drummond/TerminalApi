@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace TerminalApi
 {
@@ -42,7 +43,11 @@ namespace TerminalApi
 		/// <returns>The newly created <see cref="TerminalKeyword"/></returns>
 		public static TerminalKeyword CreateTerminalKeyword(string word, bool isVerb = false, TerminalNode triggeringNode = null) 
 		{
-			return new TerminalKeyword() { word = word, isVerb = isVerb, specialKeywordResult = triggeringNode };
+			TerminalKeyword newKeyword = ScriptableObject.CreateInstance<TerminalKeyword>();
+			newKeyword.word = word;
+			newKeyword.isVerb = isVerb;
+			newKeyword.specialKeywordResult = triggeringNode;
+			return newKeyword;
 		}
 
 		/// <summary>
@@ -55,7 +60,11 @@ namespace TerminalApi
 		/// <returns>The newly created <see cref="TerminalKeyword"/></returns>
 		public static TerminalKeyword CreateTerminalKeyword(string word, string displayText, bool clearPreviousText = false, string terminalEvent = "")
 		{
-			return new TerminalKeyword() { word = word, isVerb = false, specialKeywordResult = CreateTerminalNode(displayText, clearPreviousText, terminalEvent) };
+			TerminalKeyword newKeyword = ScriptableObject.CreateInstance<TerminalKeyword>();
+			newKeyword.word = word;
+			newKeyword.isVerb = false;
+			newKeyword.specialKeywordResult = CreateTerminalNode(displayText, clearPreviousText, terminalEvent);
+			return newKeyword;
 		}
 
 		/// <summary>
@@ -67,7 +76,11 @@ namespace TerminalApi
 		/// <returns></returns>
 		public static TerminalNode CreateTerminalNode(string displayText, bool clearPreviousText = false, string terminalEvent = "")
 		{
-			return new TerminalNode() { displayText = displayText, clearPreviousText = clearPreviousText, terminalEvent = terminalEvent };
+			TerminalNode newNode = ScriptableObject.CreateInstance<TerminalNode>();
+			newNode.displayText = displayText;
+			newNode.clearPreviousText = clearPreviousText;
+			newNode.terminalEvent = terminalEvent;
+			return newNode;
 		}
 
 		/// <summary>
