@@ -1,7 +1,7 @@
 {
     "name": "TerminalApi",
-    "version_number": "1.0.0",
-    "website_url": "https://github.com/NotAtomicBomb/TerminalApi/tree/main",
+    "version_number": "1.0.2",
+    "website_url": "https://github.com/NotAtomicBomb/TerminalApi",
     "description": "A Terminal Api",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100"
