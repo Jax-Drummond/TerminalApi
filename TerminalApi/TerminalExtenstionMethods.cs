@@ -80,6 +80,31 @@ namespace TerminalApi
 		}
 
 		/// <summary>
+		/// Adds a compatible noun to a verb keyword.
+		/// </summary>
+		/// <param name="terminalKeyword">The keyword that is adding compatible nouns</param>
+		/// <param name="noun">The noun keyword you want to add</param>
+		/// <param name="result">The text that will display when verb is ran with the noun</param>
+		/// <returns>The edited <see cref="TerminalKeyword"/></returns>
+		public static TerminalKeyword AddCompatibleNoun(this TerminalKeyword terminalKeyword, TerminalKeyword noun, string displayText, bool clearPreviousText = false)
+		{
+			if (terminalKeyword.isVerb)
+			{
+				CompatibleNoun compatibleNoun = new CompatibleNoun() { noun = noun, result = TerminalApi.CreateTerminalNode(displayText, clearPreviousText) };
+				if (terminalKeyword.compatibleNouns == null)
+				{
+					terminalKeyword.compatibleNouns = new CompatibleNoun[1] { compatibleNoun };
+				}
+				else
+				{
+					terminalKeyword.compatibleNouns = terminalKeyword.compatibleNouns.Add(compatibleNoun);
+				}
+				return terminalKeyword;
+			}
+			return null;
+		}
+
+		/// <summary>
 		/// Adds newItem to an array.
 		/// </summary>
 		/// <typeparam name="T">The type of the array</typeparam>

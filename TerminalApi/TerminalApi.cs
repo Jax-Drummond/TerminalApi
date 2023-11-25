@@ -244,11 +244,12 @@ namespace TerminalApi
 		/// <param name="verbKeyword">The verb keyword that already exists in the terminal</param>
 		/// <param name="noun">The noun word that you want to add</param>
 		/// <param name="displayText">The text you want to display when the verb noun combo is used</param>
-		public static void AddCompatibleNoun(TerminalKeyword verbKeyword, string noun, string displayText)
+		public static void AddCompatibleNoun(TerminalKeyword verbKeyword, string noun, string displayText, bool clearPreviousText = false)
 		{
 			if (_isInGame())
 			{
-				verbKeyword = verbKeyword.AddCompatibleNoun(noun, displayText);
+				TerminalKeyword nounKeyword = GetKeyword(noun);
+				verbKeyword = verbKeyword.AddCompatibleNoun(nounKeyword, displayText, clearPreviousText);
 				UpdateKeyword(verbKeyword);
 			}
 		}
@@ -263,7 +264,8 @@ namespace TerminalApi
 		{
 			if (_isInGame())
 			{
-				verbKeyword = verbKeyword.AddCompatibleNoun(noun, triggerNode);
+				TerminalKeyword nounKeyword = GetKeyword(noun);
+				verbKeyword = verbKeyword.AddCompatibleNoun(nounKeyword, triggerNode);
 				UpdateKeyword(verbKeyword);
 			}
 		}
@@ -279,8 +281,9 @@ namespace TerminalApi
 			if (_isInGame())
 			{
 				TerminalKeyword verbTerminalKeyword = GetKeyword(verbWord);
-				if(verbTerminalKeyword == null) { plugin.Log.LogError("The verb given does not exist."); return; }
-				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(noun, triggerNode);
+				TerminalKeyword nounKeyword = GetKeyword(noun);
+				if (verbTerminalKeyword == null) { plugin.Log.LogError("The verb given does not exist."); return; }
+				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(nounKeyword, triggerNode);
 				UpdateKeyword(verbTerminalKeyword);
 			}
 		}
@@ -291,13 +294,14 @@ namespace TerminalApi
 		/// <param name="verbWord">The verb word that already exists in the terminal</param>
 		/// <param name="noun">The noun word that you want to add</param>
 		/// <param name="displayText">The text you want to display when the verb noun combo is used</param>
-		public static void AddCompatibleNoun(string verbWord, string noun, string displayText)
+		public static void AddCompatibleNoun(string verbWord, string noun, string displayText, bool clearPreviousText = false)
 		{
 			if (_isInGame())
 			{
 				TerminalKeyword verbTerminalKeyword = GetKeyword(verbWord);
+				TerminalKeyword nounKeyword = GetKeyword(noun);
 				if (verbTerminalKeyword == null) { plugin.Log.LogError("The verb given does not exist."); return; }
-				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(noun, displayText);
+				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(nounKeyword, displayText, clearPreviousText);
 				UpdateKeyword(verbTerminalKeyword);
 			}
 		}
