@@ -13,6 +13,7 @@ namespace TerminalApi
 		public static Plugin plugin;
 		
 		public static List<DelayedAction> QueuedActions = new List<DelayedAction>();
+		
 		/// <summary>
 		/// The ingame terminal script.
 		/// </summary>

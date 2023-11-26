@@ -1,6 +1,6 @@
 {
     "name": "TerminalApi",
-    "version_number": "1.0.2",
+    "version_number": "1.1.0",
     "website_url": "https://github.com/NotAtomicBomb/TerminalApi",
     "description": "A Terminal Api",
     "dependencies": [
