@@ -6,6 +6,8 @@ Terminal Api provides a nice a easy way to add and modify terminal keywords.
 It allows you to create and add them whenever you want in your code as it 
 will automatically add the keywords when it is safe to do so.
 
+See [Time Command](https://github.com/NotAtomicBomb/TimeCommand/blob/main/TimeTerminalCommand/Plugin.cs/) mod for an example case of this api.
+
 ## Table of Contents
 
 1. [Creating Terminal Keywords](#creating-terminal-keywords)
