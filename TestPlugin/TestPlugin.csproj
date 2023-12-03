@@ -33,7 +33,7 @@
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\netstandard.dll</HintPath>
     </Reference>
     <Reference Include="TerminalApi">
-      <HintPath>..\..\TerminalApi\TerminalApi\bin\Debug\net46\TerminalApi.dll</HintPath>
+      <HintPath>..\TerminalApi\obj\Debug\net46\TerminalApi.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Netcode.Runtime">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.Netcode.Runtime.dll</HintPath>

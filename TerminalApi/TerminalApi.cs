@@ -29,8 +29,8 @@ namespace TerminalApi
 			{
 				return Terminal is not null;
 			}
-			catch (NullReferenceException ex)
-			{
+			catch (NullReferenceException)
+            {
 				return false;
 			}
 		}

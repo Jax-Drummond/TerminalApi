@@ -17,6 +17,8 @@ namespace TestPlugin
 			TerminalStarting += TerminalIsStarting;
 			TerminalStarted += TerminalIsStarted;
 			TerminalParsedSentence += TextSubmitted;
+			TerminalBeginUsing += OnBeginUsing;
+			TerminalBeganUsing += BeganUsing;
 
 			// Will display 'World' when 'hello' is typed into the terminal
 			AddCommand("hello", "World\n");
@@ -28,7 +30,7 @@ namespace TestPlugin
 
 		}
 
-		private void TerminalIsAwake(object sender, TerminalEventArgs e)
+        private void TerminalIsAwake(object sender, TerminalEventArgs e)
 		{
 			Logger.LogMessage("Terminal is awake");
 		}
@@ -51,6 +53,16 @@ namespace TestPlugin
         private void TextSubmitted(object sender, TerminalParseSentenceEventArgs e)
         {
             Logger.LogMessage($"Text submitted: {e.SubmittedText} Node Returned: {e.ReturnedNode}");
+        }
+
+		private void OnBeginUsing(object sender, TerminalEventArgs e)
+		{
+            Logger.LogMessage("Player has just started using the terminal");
+        }
+
+        private void BeganUsing(object sender, TerminalEventArgs e)
+        {
+            Logger.LogMessage("Player is using terminal");
         }
 
     }
