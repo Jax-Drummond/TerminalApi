@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using System;
+using TerminalApi;
 using static TerminalApi.Events.Events;
 using static TerminalApi.TerminalApi;
 
@@ -30,9 +31,19 @@ namespace TestPlugin
 			// because the default verb will be 'run'
 			AddCommand("kill", "Sorry but you cannot run kill\n", "run");
 
+			// All the code below is essentially the same as the line of code above
+            TerminalNode triggerNode = CreateTerminalNode($"Frank is not available right now.\n", true);
+            TerminalKeyword verbKeyword = CreateTerminalKeyword("get", true);
+            TerminalKeyword nounKeyword = CreateTerminalKeyword("frank");
+
+            verbKeyword = verbKeyword.AddCompatibleNoun(nounKeyword, triggerNode);
+            nounKeyword.defaultVerb = verbKeyword;
+
+            AddTerminalKeyword(verbKeyword);
+            AddTerminalKeyword(nounKeyword);
 
 
-		}
+        }
 
         private void OnTerminalExit(object sender, TerminalEventArgs e)
         {
