@@ -11,10 +11,10 @@ namespace TerminalApi.Events
 	{
         [HarmonyPatch("ParsePlayerSentence")]
         [HarmonyPostfix]
-		public static void ParsePlayerSentence(ref Terminal __instance, TerminalKeyword __result)
+		public static void ParsePlayerSentence(ref Terminal __instance, TerminalNode __result)
         {
             string submittedText = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
-            TerminalParsedSentence?.Invoke((object)__instance, new() { Terminal = __instance, SubmittedText = submittedText, ReturnedKeyword = __result });
+            TerminalParsedSentence?.Invoke((object)__instance, new() { Terminal = __instance, SubmittedText = submittedText, ReturnedNode = __result });
         }
     }
 }

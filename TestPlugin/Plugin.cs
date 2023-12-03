@@ -50,7 +50,7 @@ namespace TestPlugin
 
         private void TextSubmitted(object sender, TerminalParseSentenceEventArgs e)
         {
-            Logger.LogMessage($"Text submitted: {e.SubmittedText} Keyword Returned: {e.ReturnedKeyword}");
+            Logger.LogMessage($"Text submitted: {e.SubmittedText} Node Returned: {e.ReturnedNode}");
         }
 
     }

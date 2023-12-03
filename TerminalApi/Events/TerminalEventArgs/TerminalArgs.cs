@@ -31,7 +31,7 @@ namespace TerminalApi.Events
 		public class TerminalParseSentenceEventArgs : EventArgs
 		{
 			public Terminal Terminal { get; set; }
-			public TerminalKeyword ReturnedKeyword { get; set; } 
+			public TerminalNode ReturnedNode { get; set; } 
 			public string SubmittedText { get; set; }
 		}
 
