@@ -22,3 +22,10 @@
 `TerminalApi.Patches.TerminalAwakePatch.TerminalAwake`
 - Some file organizing 
 - Added CHANGELOG
+
+## Version 1.2.0
+
+- Added more events
+- Events are now located at `TerminalApi.Events`
+- Added the `AddCommand` method to easily add terminal commands
+- Update README

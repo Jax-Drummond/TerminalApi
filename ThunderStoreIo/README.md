@@ -6,14 +6,17 @@ Terminal Api provides a nice a easy way to add and modify terminal keywords.
 It allows you to create and add them whenever you want in your code as it 
 will automatically add the keywords when it is safe to do so.
 
-See [Time Command](https://github.com/NotAtomicBomb/TimeCommand/blob/main/TimeTerminalCommand/Plugin.cs/) mod for an example case of this api.
+See [Test Plugin](https://github.com/NotAtomicBomb/TerminalApi/blob/main/TestPlugin/Plugin.cs) [Time Command](https://github.com/NotAtomicBomb/TimeCommand/blob/main/TimeTerminalCommand/Plugin.cs/) mod for an example case of this api.
 
 ## Installation
 
 Just drag and drop the BepInEx folder to your Lethal Company root folder(Where the Lethal Company.exe is).
+Or just use the thuderstore mod loader, much easier.
 
 ## Table of Contents
 
+1. [Adding Commands](#adding-commands)
+2. [Events](#events)
 1. [Creating Terminal Keywords](#creating-terminal-keywords)
 2. [Creating Terminal Nodes](#creating-terminal-nodes)
 3. [Adding and Managing Keywords](#adding-keywords)
@@ -22,7 +25,37 @@ Just drag and drop the BepInEx folder to your Lethal Company root folder(Where t
 6. [Compatible Nouns](#compatible-nouns)
     - [Adding Compatible Nouns to Newly Created Keyword](#adding-compatible-noun-to-newly-created-keyword)
     - [Updating Existing Compatible Noun](#updating-existing-compatible-noun)
-7. [Examples](#examples)
+
+## Adding Commands
+
+This api give you an easy way to add terminal commands via the `AddCommand` method.
+This methods returns nothing.
+There is one method:
+- `AddCommand(string commandWord, string displayText, string verbWord = null, bool clearPreviousText)`
+
+Example:
+
+```cs
+    AddCommand("frank", "Frank is not here\n", "get", true)
+```
+Will display `Frank is not here` when `get frank` or `frank` is sent in the terminal
+
+## Events
+
+There are multiple subscribable events that this api provides.
+They can be found in the `TerminalApi.Events` namespace.
+Here is a list of them:
+
+- `TerminalAwake` - Runs when the terminal is fully awake.
+- `TerminalWaking` - Runs when the terminal is waking up.
+- `TerminalStarted` - Runs when the terminal is fully started.
+- `TerminalStarting` - Runs when the terminal starts.
+- `TerminalBeginUsing` - Runs when the player begins using.
+- `TerminalBeganUsing` - Runs after begins using.
+- `TerminalExited` - Runs when the player exits the terminal.
+- `TerminalParsedSentence` - Runs when the player sends a command.
+
+For more information please check [Test Plugin](https://github.com/NotAtomicBomb/TerminalApi/blob/main/TestPlugin/Plugin.cs).
 
 ## Creating Terminal Keywords
 
