@@ -26,6 +26,9 @@ Or just use the thuderstore mod loader, much easier.
     - [Adding Compatible Nouns to Newly Created Keyword](#adding-compatible-noun-to-newly-created-keyword)
     - [Updating Existing Compatible Noun](#updating-existing-compatible-noun)
 
+> [!WARNING]
+> Make sure you are not adding duplicate keywords. I do plan on having a system to handle this in the future.
+
 ## Adding Commands
 
 This api give you an easy way to add terminal commands via the `AddCommand` method.
