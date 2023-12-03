@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using System;
 using static TerminalApi.Events.Events;
 using static TerminalApi.TerminalApi;
 
@@ -19,6 +20,7 @@ namespace TestPlugin
 			TerminalParsedSentence += TextSubmitted;
 			TerminalBeginUsing += OnBeginUsing;
 			TerminalBeganUsing += BeganUsing;
+			TerminalExited += OnTerminalExit;
 
 			// Will display 'World' when 'hello' is typed into the terminal
 			AddCommand("hello", "World\n");
@@ -28,7 +30,14 @@ namespace TestPlugin
 			// because the default verb will be 'run'
 			AddCommand("kill", "Sorry but you cannot run kill\n", "run");
 
+
+
 		}
+
+        private void OnTerminalExit(object sender, TerminalEventArgs e)
+        {
+            Logger.LogMessage("Terminal Exited");
+        }
 
         private void TerminalIsAwake(object sender, TerminalEventArgs e)
 		{

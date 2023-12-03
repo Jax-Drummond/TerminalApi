@@ -35,6 +35,11 @@ namespace TerminalApi.Events
 		/// </summary>
 		public static event TerminalEventHandler TerminalBeganUsing;
 		/// <summary>
+		/// Runs after the <see cref="Terminal.QuitTerminal"/> method
+		/// Returns the <see cref="Terminal"/>
+		/// </summary>
+		public static event TerminalEventHandler TerminalExited;
+		/// <summary>
 		/// Runs when the user submits a command.
 		/// Returns the <see cref="Terminal"/>, the text command submitted, and the returned <see cref="TerminalNode"/>
 		/// </summary>
