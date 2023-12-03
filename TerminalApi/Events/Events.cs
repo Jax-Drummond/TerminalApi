@@ -8,5 +8,6 @@ namespace TerminalApi.Events
 		public static event TerminalWakingEventHandler TerminalWaking;
 		public static event TerminalStartedEventHandler TerminalStarted;
 		public static event TerminalStartingEventHandler TerminalStarting;
+		public static event TerminalParseSentenceEventHandler TerminalParsedSentence;
 	}
 }

@@ -16,6 +16,7 @@ namespace TestPlugin
 			TerminalWaking += TerminalIsWaking;
 			TerminalStarting += TerminalIsStarting;
 			TerminalStarted += TerminalIsStarted;
+			TerminalParsedSentence += TextSubmitted;
 
 			// Will display 'World' when 'hello' is typed into the terminal
 			AddCommand("hello", "World\n");
@@ -47,5 +48,10 @@ namespace TestPlugin
 			Logger.LogMessage("Terminal is started");
 		}
 
-	}
+        private void TextSubmitted(object sender, TerminalParseSentenceEventArgs e)
+        {
+            Logger.LogMessage($"Text submitted: {e.SubmittedText} Keyword Returned: {e.ReturnedKeyword}");
+        }
+
+    }
 }

@@ -27,5 +27,17 @@ namespace TerminalApi.Events
 		/// Triggers when the Terminal is Starting. Waking happens before starting.
 		/// </summary>
 		public delegate void TerminalStartingEventHandler(Object sender, TerminalEventArgs e);
+
+		public class TerminalParseSentenceEventArgs : EventArgs
+		{
+			public Terminal Terminal { get; set; }
+			public TerminalKeyword ReturnedKeyword { get; set; } 
+			public string SubmittedText { get; set; }
+		}
+
+		/// <summary>
+		/// Triggers when the user sends a command in the terminal
+		/// </summary>
+		public delegate void TerminalParseSentenceEventHandler(Object sender, TerminalParseSentenceEventArgs e);
 	}
 }
