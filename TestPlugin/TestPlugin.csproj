@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <AssemblyName>TerminalApi</AssemblyName>
-    <Description>Terminal Api</Description>
+    <AssemblyName>TestPlugin</AssemblyName>
+    <Description>A terminal command that displays the current time</Description>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
@@ -12,14 +12,7 @@
       https://nuget.bepinex.dev/v3/index.json;
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
-    <RootNamespace>TerminalApi</RootNamespace>
-    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <GenerateDocumentationFile>False</GenerateDocumentationFile>
-    <SignAssembly>False</SignAssembly>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Optimize>True</Optimize>
+    <RootNamespace>TimeTerminalCommand</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +31,15 @@
     </Reference>
     <Reference Include="netstandard">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\netstandard.dll</HintPath>
+    </Reference>
+    <Reference Include="TerminalApi">
+      <HintPath>..\..\TerminalApi\TerminalApi\bin\Debug\net46\TerminalApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Netcode.Runtime">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.Netcode.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>..\..\TerminalApi\TerminalApi\bin\Debug\net46\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\UnityEngine.dll</HintPath>

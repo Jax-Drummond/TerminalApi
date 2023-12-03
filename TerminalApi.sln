@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerminalApi", "TerminalApi\TerminalApi.csproj", "{C38E530C-B997-4F94-81F2-96CC8190984E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerminalApi", "TerminalApi\TerminalApi.csproj", "{C38E530C-B997-4F94-81F2-96CC8190984E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestPlugin", "TestPlugin\TestPlugin.csproj", "{49C4A8A4-752F-4A6A-9AEB-F2319CB356B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C38E530C-B997-4F94-81F2-96CC8190984E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C38E530C-B997-4F94-81F2-96CC8190984E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C38E530C-B997-4F94-81F2-96CC8190984E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49C4A8A4-752F-4A6A-9AEB-F2319CB356B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49C4A8A4-752F-4A6A-9AEB-F2319CB356B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49C4A8A4-752F-4A6A-9AEB-F2319CB356B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49C4A8A4-752F-4A6A-9AEB-F2319CB356B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

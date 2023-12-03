@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace TerminalApi
 {
-	public static class TerminalApi 
+	public static class TerminalApi
 	{
 		/// <summary>
 		/// The plugin of terminalapi
 		/// </summary>
 		public static Plugin plugin;
 		
-		public static List<DelayedAction> QueuedActions = new List<DelayedAction>();
+		internal static List<DelayedAction> QueuedActions = new List<DelayedAction>();
 		
 		/// <summary>
 		/// The ingame terminal script.
@@ -22,8 +22,8 @@ namespace TerminalApi
 		/// <summary>
 		/// Checks if the player is ingame via checking if the terminal script exists.
 		/// </summary>
-		/// <returns></returns>
-		internal static bool _isInGame()
+		/// <returns>Whether the player is in game or not</returns>
+		public static bool IsInGame()
 		{
 			try
 			{
@@ -32,6 +32,34 @@ namespace TerminalApi
 			catch (NullReferenceException ex)
 			{
 				return false;
+			}
+		}
+
+		/// <summary>
+		///  Automatically creates and adds <see cref="TerminalKeyword"/> to the terminal based on inputs given.
+		/// </summary>
+		/// <param name="commandWord">This is essentially the noun word. What needs to be entered to trigger the display text.</param>
+		/// <param name="displayText">The text to display when the command word is sent.</param>
+		/// <param name="verbWord">The word that comes before the command word. Will be set as default so you can still just enter the command word to trigger.</param>
+		/// <param name="clearPreviousText">Whether or not to clear the terminal after entering command.</param>
+		public static void AddCommand(string commandWord, string displayText, string verbWord = null, bool clearPreviousText = true)
+		{ 
+			commandWord = commandWord.ToLower();
+			TerminalKeyword mainKeyword = CreateTerminalKeyword(commandWord);
+			TerminalNode triggerNode = CreateTerminalNode(displayText, clearPreviousText);
+			if(verbWord != null)
+			{
+				verbWord = verbWord.ToLower();
+				TerminalKeyword verbKeyword = CreateTerminalKeyword(verbWord, true);
+				verbKeyword = verbKeyword.AddCompatibleNoun(mainKeyword, triggerNode);
+				mainKeyword.defaultVerb = verbKeyword;
+				AddTerminalKeyword(verbKeyword);
+				AddTerminalKeyword(mainKeyword);
+			}
+			else
+			{
+				mainKeyword.specialKeywordResult = triggerNode;
+				AddTerminalKeyword(mainKeyword);
 			}
 		}
 
@@ -45,7 +73,7 @@ namespace TerminalApi
 		public static TerminalKeyword CreateTerminalKeyword(string word, bool isVerb = false, TerminalNode triggeringNode = null) 
 		{
 			TerminalKeyword newKeyword = ScriptableObject.CreateInstance<TerminalKeyword>();
-			newKeyword.word = word;
+			newKeyword.word = word.ToLower();
 			newKeyword.isVerb = isVerb;
 			newKeyword.specialKeywordResult = triggeringNode;
 			return newKeyword;
@@ -62,7 +90,7 @@ namespace TerminalApi
 		public static TerminalKeyword CreateTerminalKeyword(string word, string displayText, bool clearPreviousText = false, string terminalEvent = "")
 		{
 			TerminalKeyword newKeyword = ScriptableObject.CreateInstance<TerminalKeyword>();
-			newKeyword.word = word;
+			newKeyword.word = word.ToLower();
 			newKeyword.isVerb = false;
 			newKeyword.specialKeywordResult = CreateTerminalNode(displayText, clearPreviousText, terminalEvent);
 			return newKeyword;
@@ -90,10 +118,17 @@ namespace TerminalApi
 		/// <param name="terminalKeyword">The keyword to add</param>
 		public static void AddTerminalKeyword(TerminalKeyword terminalKeyword)
 		{
-			if(_isInGame())
+			if(IsInGame())
 			{
-				Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
-				plugin.Log.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
+				if (GetKeyword(terminalKeyword.word) is null)
+				{
+					Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
+					plugin.Log.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
+				}
+				else
+				{
+					plugin.Log.LogWarning($"Failed to add {terminalKeyword.word} keyword. Already exists.");
+				}
 			}
 			else
 			{
@@ -111,7 +146,7 @@ namespace TerminalApi
 		/// <returns>A <see cref="TerminalKeyword"/> from allKeywords. Or null</returns>
 		public static TerminalKeyword GetKeyword(string keyword)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				return Terminal.terminalNodes.allKeywords.FirstOrDefault(Kw => Kw.word == keyword);
 			}
@@ -127,7 +162,7 @@ namespace TerminalApi
 		/// <param name="keyword">The key word to update</param>
 		public static void UpdateKeyword(TerminalKeyword keyword)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				for (int i = 0; i < Terminal.terminalNodes.allKeywords.Length; i++)
 				{
@@ -150,7 +185,7 @@ namespace TerminalApi
 		/// <param name="newTriggerNode">The new node that will trigger when the noun is used with verb.</param>
 		public static void UpdateKeywordCompatibleNoun(TerminalKeyword verbKeyword, string noun, TerminalNode newTriggerNode)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				if (!verbKeyword.isVerb)
 				{
@@ -164,8 +199,10 @@ namespace TerminalApi
 					{
 						compatibleNoun.result = newTriggerNode;
 						UpdateKeyword(verbKeyword);
+						return;
 					}
 				}
+				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -177,7 +214,7 @@ namespace TerminalApi
 		/// <param name="newTriggerNode">The new node that will trigger when the noun is used with verb.</param>
 		public static void UpdateKeywordCompatibleNoun(string verbWord, string noun, TerminalNode newTriggerNode)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				TerminalKeyword verbKeyword = GetKeyword(verbWord);
 				if (!verbKeyword.isVerb || verbWord == null)
@@ -192,8 +229,10 @@ namespace TerminalApi
 					{
 						compatibleNoun.result = newTriggerNode;
 						UpdateKeyword(verbKeyword);
+						return;
 					}
 				}
+				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -205,7 +244,7 @@ namespace TerminalApi
 		/// <param name="newTriggerNode">The new text that will display when the noun is used with verb.</param>
 		public static void UpdateKeywordCompatibleNoun(TerminalKeyword verbKeyword, string noun, string newDisplayText)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				if (!verbKeyword.isVerb)
 				{
@@ -219,8 +258,10 @@ namespace TerminalApi
 					{
 						compatibleNoun.result.displayText = newDisplayText;
 						UpdateKeyword(verbKeyword);
+						return;
 					}
 				}
+				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -232,7 +273,7 @@ namespace TerminalApi
 		/// <param name="newTriggerNode">The new text that will display when the noun is used with verb.</param>
 		public static void UpdateKeywordCompatibleNoun(string verbWord, string noun, string newDisplayText)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				TerminalKeyword verbKeyword = GetKeyword(verbWord);
 				if (!verbKeyword.isVerb)
@@ -247,8 +288,10 @@ namespace TerminalApi
 					{
 						compatibleNoun.result.displayText = newDisplayText;
 						UpdateKeyword(verbKeyword);
+						return;
 					}
 				}
+				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -260,7 +303,7 @@ namespace TerminalApi
 		/// <param name="displayText">The text you want to display when the verb noun combo is used</param>
 		public static void AddCompatibleNoun(TerminalKeyword verbKeyword, string noun, string displayText, bool clearPreviousText = false)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				TerminalKeyword nounKeyword = GetKeyword(noun);
 				verbKeyword = verbKeyword.AddCompatibleNoun(nounKeyword, displayText, clearPreviousText);
@@ -276,7 +319,7 @@ namespace TerminalApi
 		/// <param name="triggerNode">The node you want to trigger when the verb noun combo is used</param>
 		public static void AddCompatibleNoun(TerminalKeyword verbKeyword, string noun, TerminalNode triggerNode)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				TerminalKeyword nounKeyword = GetKeyword(noun);
 				verbKeyword = verbKeyword.AddCompatibleNoun(nounKeyword, triggerNode);
@@ -292,7 +335,7 @@ namespace TerminalApi
 		/// <param name="triggerNode">The node you want to trigger when the verb noun combo is used</param>
 		public static void AddCompatibleNoun(string verbWord, string noun, TerminalNode triggerNode)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				TerminalKeyword verbTerminalKeyword = GetKeyword(verbWord);
 				TerminalKeyword nounKeyword = GetKeyword(noun);
@@ -310,7 +353,7 @@ namespace TerminalApi
 		/// <param name="displayText">The text you want to display when the verb noun combo is used</param>
 		public static void AddCompatibleNoun(string verbWord, string noun, string displayText, bool clearPreviousText = false)
 		{
-			if (_isInGame())
+			if (IsInGame())
 			{
 				TerminalKeyword verbTerminalKeyword = GetKeyword(verbWord);
 				TerminalKeyword nounKeyword = GetKeyword(noun);

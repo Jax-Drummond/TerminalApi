@@ -5,7 +5,7 @@ namespace TerminalApi
 	/// <summary>
 	/// Allows information to be stored so that it can be run later.
 	/// </summary>
-	public class DelayedAction
+	internal class DelayedAction
 	{
 		internal Action<TerminalKeyword> Action{ get; set; }
 		internal TerminalKeyword Keyword { get; set; }
