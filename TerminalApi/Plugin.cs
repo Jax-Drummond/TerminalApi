@@ -17,6 +17,7 @@ namespace TerminalApi
 			TerminalApi.plugin = this;
 
 			Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
+			
 		}
 	}
 }
