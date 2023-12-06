@@ -29,3 +29,7 @@
 - Events are now located at `TerminalApi.Events`
 - Added the `AddCommand` method to easily add terminal commands
 - Update README
+
+## Version 1.3.0
+
+- Added `TerminalTextChanged` event

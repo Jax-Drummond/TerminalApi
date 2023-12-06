@@ -57,6 +57,7 @@ Here is a list of them:
 - `TerminalBeganUsing` - Runs after begins using.
 - `TerminalExited` - Runs when the player exits the terminal.
 - `TerminalParsedSentence` - Runs when the player sends a command.
+- `TerminalTextChanged` -  Runs when the player types in the terminal.
 
 For more information please check [Test Plugin](https://github.com/NotAtomicBomb/TerminalApi/blob/main/TestPlugin/Plugin.cs).
 

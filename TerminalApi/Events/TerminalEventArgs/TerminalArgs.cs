@@ -18,5 +18,13 @@ namespace TerminalApi.Events
 		}
 
 		public delegate void TerminalParseSentenceEventHandler(Object sender, TerminalParseSentenceEventArgs e);
+
+		public class TerminalTextChangedEventArgs : TerminalEventArgs 
+		{ 
+			public string NewText;
+			public string CurrentInputText;
+		}
+
+		public delegate void TerminalTextChangedEventHandler(Object sender, TerminalTextChangedEventArgs e);
 	}
 }

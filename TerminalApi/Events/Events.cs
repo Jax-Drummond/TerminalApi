@@ -44,5 +44,10 @@ namespace TerminalApi.Events
 		/// Returns the <see cref="Terminal"/>, the text command submitted, and the returned <see cref="TerminalNode"/>
 		/// </summary>
 		public static event TerminalParseSentenceEventHandler TerminalParsedSentence;
+		/// <summary>
+		/// Runs when the user types in the terminal.
+		/// Returns <see cref="Terminal"/>, the new text it was changed to, and the current text in the input.
+		/// </summary>
+		public static event TerminalTextChangedEventHandler TerminalTextChanged;
 	}
 }
