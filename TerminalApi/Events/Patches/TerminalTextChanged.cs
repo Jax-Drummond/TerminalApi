@@ -13,7 +13,11 @@ namespace TerminalApi.Events
         [HarmonyPostfix]
 		public static void OnTextChanged(ref Terminal __instance, string newText)
         {
-            string currentInputText = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
+            string currentInputText= "";
+            if (newText.Trim().Length >= __instance.textAdded)
+            {
+                currentInputText = newText.Substring(newText.Length - __instance.textAdded);
+            }
             TerminalTextChanged?.Invoke((object)__instance, new() { Terminal = __instance,  NewText = newText, CurrentInputText = currentInputText } );
         }
     }
