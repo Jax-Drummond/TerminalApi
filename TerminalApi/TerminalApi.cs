@@ -169,7 +169,6 @@ namespace TerminalApi
 					if (Terminal.terminalNodes.allKeywords[i].word == keyword.word)
 					{
 						Terminal.terminalNodes.allKeywords[i] = keyword;
-						plugin.Log.LogMessage($"Updated {keyword.word}");
 						return;
 					}
 				}
