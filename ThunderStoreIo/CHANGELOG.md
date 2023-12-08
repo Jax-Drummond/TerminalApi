@@ -37,3 +37,7 @@
 ## Version 1.3.1
 
 - Fixed bug with TextChanged event
+
+## Version 1.3.2
+
+- [Removed logging on keyword updates](https://github.com/NotAtomicBomb/TerminalApi/pull/5)
