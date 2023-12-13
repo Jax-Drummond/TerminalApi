@@ -408,8 +408,6 @@ namespace TerminalApi
 			}
 		}
 
-		// TODO: Document these below in README
-
 		/// <summary>
 		/// Gets the users current input
 		/// </summary>

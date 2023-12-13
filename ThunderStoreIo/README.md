@@ -17,10 +17,12 @@ Or just use the thuderstore mod loader, much easier.
 
 1. [Adding Commands](#adding-commands)
 2. [Events](#events)
+3. [Terminal Input](#terminal-input)
 1. [Creating Terminal Keywords](#creating-terminal-keywords)
 2. [Creating Terminal Nodes](#creating-terminal-nodes)
-3. [Adding and Managing Keywords](#adding-keywords)
+3. [Adding Keywords](#adding-keywords)
 4. [Updating Keywords](#updating-keywords)
+5. [Deleting Keyword](#deleting-keywords)
 5. [Getting Keywords](#getting-keywords)
 6. [Compatible Nouns](#compatible-nouns)
     - [Adding Compatible Nouns to Newly Created Keyword](#adding-compatible-noun-to-newly-created-keyword)
@@ -60,6 +62,21 @@ Here is a list of them:
 - `TerminalTextChanged` -  Runs when the player types in the terminal.
 
 For more information please check [Test Plugin](https://github.com/NotAtomicBomb/TerminalApi/blob/main/TestPlugin/Plugin.cs).
+
+## Terminal Input
+
+With TerminalApi, you can get and set the users current input.
+To do that we have two methods. `GetTerminalInput` will of course get the terminal input.
+`SetTerminalInput` will set the input.
+
+Examples:
+```cs
+    string input = TerminalApi.GetTerminalInput();
+    if(input == "hello")
+    {
+        TerminalApi.SetTerminalInput("world");
+    }
+```
 
 ## Creating Terminal Keywords
 
@@ -114,6 +131,19 @@ Example:
 ```cs
     TerminalApi.UpdateKeyword(keyword);
 ```
+
+## Deleting Keywords
+
+Use `DeleteKeyword` to delete an existing keyword.
+
+There is one method available:
+- `DeleteKeyword(string word)`
+
+Example:
+```cs
+    TerminalApi.DeleteKeyword("buy")
+```
+^ Will delete the buy keyword, if it exists
 
 ## Getting Keywords
 

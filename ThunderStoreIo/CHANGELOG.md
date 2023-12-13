@@ -41,3 +41,9 @@
 ## Version 1.3.2
 
 - [Removed logging on keyword updates](https://github.com/NotAtomicBomb/TerminalApi/pull/5)
+
+## Version 1.4.0
+
+- Added DeleteKeyword
+- Added GetTerminalInput
+- Added SetTerminalInput
