@@ -172,17 +172,43 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogInfo($"Failed to update {keyword.word}. Was not found in keywords.");
+				plugin.Log.LogWarning($"Failed to update {keyword.word}. Was not found in keywords.");
 			}
 		}
 
 		/// <summary>
-		/// Updates a <see cref="CompatibleNoun"/>. Only works for verbs. 
+		/// Deletes a keyword based on its word.
 		/// </summary>
-		/// <param name="verbKeyword">The keyword to update the compatible noun for.</param>
-		/// <param name="noun">The noun word of the compatible noun</param>
-		/// <param name="newTriggerNode">The new node that will trigger when the noun is used with verb.</param>
-		public static void UpdateKeywordCompatibleNoun(TerminalKeyword verbKeyword, string noun, TerminalNode newTriggerNode)
+		/// <param name="word">The word of the keyword to delete.</param>
+        public static void DeleteKeyword(string word)
+		{
+			if (IsInGame())
+			{
+                for (int i = 0; i < Terminal.terminalNodes.allKeywords.Length; i++)
+                {
+                    if (Terminal.terminalNodes.allKeywords[i].word == word.ToLower())
+                    {
+						int newSize = Terminal.terminalNodes.allKeywords.Length - 1;
+                        for (int j = i + 1; j < Terminal.terminalNodes.allKeywords.Length; j++)
+						{
+							Terminal.terminalNodes.allKeywords[j - 1] = Terminal.terminalNodes.allKeywords[j];
+                        }
+						Array.Resize(ref Terminal.terminalNodes.allKeywords, newSize);
+                        plugin.Log.LogMessage($"{word} was deleted successfully.");
+                        return;
+                    }
+                }
+                plugin.Log.LogWarning($"Failed to delete {word}. Was not found in keywords.");
+            }
+		}
+
+        /// <summary>
+        /// Updates a <see cref="CompatibleNoun"/>. Only works for verbs. 
+        /// </summary>
+        /// <param name="verbKeyword">The keyword to update the compatible noun for.</param>
+        /// <param name="noun">The noun word of the compatible noun</param>
+        /// <param name="newTriggerNode">The new node that will trigger when the noun is used with verb.</param>
+        public static void UpdateKeywordCompatibleNoun(TerminalKeyword verbKeyword, string noun, TerminalNode newTriggerNode)
 		{
 			if (IsInGame())
 			{
