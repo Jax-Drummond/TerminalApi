@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using System;
+using System.Collections.Concurrent;
 using TerminalApi;
 using static TerminalApi.Events.Events;
 using static TerminalApi.TerminalApi;
@@ -22,6 +23,7 @@ namespace TestPlugin
 			TerminalBeginUsing += OnBeginUsing;
 			TerminalBeganUsing += BeganUsing;
 			TerminalExited += OnTerminalExit;
+            TerminalTextChanged += OnTerminalTextChanged;
 
 			// Will display 'World' when 'hello' is typed into the terminal
 			AddCommand("hello", "World\n");
@@ -43,6 +45,21 @@ namespace TestPlugin
             AddTerminalKeyword(nounKeyword);
 
 
+        }
+
+        private void OnTerminalTextChanged(object sender, TerminalTextChangedEventArgs e)
+        {
+			string userInput = GetTerminalInput();
+			Logger.LogMessage(userInput);
+			// Or
+			Logger.LogMessage(e.CurrentInputText);
+
+			// If user types in fuck it will changed to frick before they can even submit
+			if(userInput == "fuck")
+			{
+				SetTerminalInput("frick");
+			}
+			
         }
 
         private void OnTerminalExit(object sender, TerminalEventArgs e)

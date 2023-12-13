@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace TerminalApi
@@ -18,6 +20,16 @@ namespace TerminalApi
 		/// The ingame terminal script.
 		/// </summary>
 		public static Terminal Terminal { get; internal set; }
+
+		/// <summary>
+		/// The string of the currently displayed text
+		/// </summary>
+		public static string CurrentText => Terminal.currentText;
+
+		/// <summary>
+		/// The TMP screen object
+		/// </summary>
+		public static TMP_InputField ScreenText => Terminal.screenText;
 
 		/// <summary>
 		/// Checks if the player is ingame via checking if the terminal script exists.
@@ -364,7 +376,11 @@ namespace TerminalApi
 			{
 				TerminalKeyword verbTerminalKeyword = GetKeyword(verbWord);
 				TerminalKeyword nounKeyword = GetKeyword(noun);
-				if (verbTerminalKeyword == null) { plugin.Log.LogError("The verb given does not exist."); return; }
+				if (verbTerminalKeyword == null) 
+				{ 
+					plugin.Log.LogWarning("The verb given does not exist."); 
+					return; 
+				}
 				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(nounKeyword, triggerNode);
 				UpdateKeyword(verbTerminalKeyword);
 			}
@@ -382,10 +398,39 @@ namespace TerminalApi
 			{
 				TerminalKeyword verbTerminalKeyword = GetKeyword(verbWord);
 				TerminalKeyword nounKeyword = GetKeyword(noun);
-				if (verbTerminalKeyword == null) { plugin.Log.LogError("The verb given does not exist."); return; }
+				if (verbTerminalKeyword == null) 
+				{ 
+					plugin.Log.LogWarning("The verb given does not exist."); 
+					return; 
+				}
 				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(nounKeyword, displayText, clearPreviousText);
 				UpdateKeyword(verbTerminalKeyword);
 			}
+		}
+
+		// TODO: Document these below in README
+
+		/// <summary>
+		/// Gets the users current input
+		/// </summary>
+		public static string GetTerminalInput()
+		{
+			if (IsInGame())
+			{
+				return CurrentText.Substring(CurrentText.Length - Terminal.textAdded);
+            }
+			return "";
+		}
+
+		/// <summary>
+		/// Sets the users current input to given string
+		/// </summary>
+		/// <param name="terminalInput">The text to set as input</param>
+		public static void SetTerminalInput(string terminalInput)
+		{
+			Terminal.TextChanged(CurrentText.Substring(0, CurrentText.Length - Terminal.textAdded) + terminalInput);
+			ScreenText.text = CurrentText;
+            Terminal.textAdded = terminalInput.Length;
 		}
 
 	}
