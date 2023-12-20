@@ -16,7 +16,7 @@ namespace TerminalApi.Events
             TerminalApi.Terminal = __instance;
             if (TerminalApi.QueuedActions.Count > 0)
             {
-				TerminalApi.plugin.Log.LogMessage($"In game, now adding words.");
+				TerminalApi.plugin.Log?.LogMessage($"In game, now adding words.");
                 foreach (DelayedAction delayedAction in TerminalApi.QueuedActions)
                 {
                     delayedAction.Run();

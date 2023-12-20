@@ -135,16 +135,16 @@ namespace TerminalApi
 				if (GetKeyword(terminalKeyword.word) is null)
 				{
 					Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
-					plugin.Log.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
+					plugin.Log?.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
 				}
 				else
 				{
-					plugin.Log.LogWarning($"Failed to add {terminalKeyword.word} keyword. Already exists.");
+					plugin.Log?.LogWarning($"Failed to add {terminalKeyword.word} keyword. Already exists.");
 				}
 			}
 			else
 			{
-				plugin.Log.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
+				plugin.Log?.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
 				Action<TerminalKeyword> newAction = AddTerminalKeyword;
 				DelayedAction delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
 				QueuedActions.Add(delayedAction);
@@ -184,7 +184,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"Failed to update {keyword.word}. Was not found in keywords.");
+				plugin.Log?.LogWarning($"Failed to update {keyword.word}. Was not found in keywords.");
 			}
 		}
 
@@ -206,11 +206,11 @@ namespace TerminalApi
 							Terminal.terminalNodes.allKeywords[j - 1] = Terminal.terminalNodes.allKeywords[j];
                         }
 						Array.Resize(ref Terminal.terminalNodes.allKeywords, newSize);
-                        plugin.Log.LogMessage($"{word} was deleted successfully.");
+                        plugin.Log?.LogMessage($"{word} was deleted successfully.");
                         return;
                     }
                 }
-                plugin.Log.LogWarning($"Failed to delete {word}. Was not found in keywords.");
+                plugin.Log?.LogWarning($"Failed to delete {word}. Was not found in keywords.");
             }
 		}
 
@@ -239,7 +239,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
+				plugin.Log?.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -269,7 +269,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
+				plugin.Log?.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -298,7 +298,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
+				plugin.Log?.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -328,7 +328,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
+				plugin.Log?.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -378,7 +378,7 @@ namespace TerminalApi
 				TerminalKeyword nounKeyword = GetKeyword(noun);
 				if (verbTerminalKeyword == null) 
 				{ 
-					plugin.Log.LogWarning("The verb given does not exist."); 
+					plugin.Log?.LogWarning("The verb given does not exist."); 
 					return; 
 				}
 				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(nounKeyword, triggerNode);
@@ -400,7 +400,7 @@ namespace TerminalApi
 				TerminalKeyword nounKeyword = GetKeyword(noun);
 				if (verbTerminalKeyword == null) 
 				{ 
-					plugin.Log.LogWarning("The verb given does not exist."); 
+					plugin.Log?.LogWarning("The verb given does not exist."); 
 					return; 
 				}
 				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(nounKeyword, displayText, clearPreviousText);
