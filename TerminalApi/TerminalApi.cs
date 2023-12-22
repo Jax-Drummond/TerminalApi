@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using TerminalApi.Classes;
 using TMPro;
 using UnityEngine;
 
@@ -15,6 +15,8 @@ namespace TerminalApi
 		public static Plugin plugin;
 		
 		internal static List<DelayedAction> QueuedActions = new List<DelayedAction>();
+
+		internal static List<Command> Commands = new List<Command>();
 		
 		/// <summary>
 		/// The ingame terminal script.
@@ -47,6 +49,7 @@ namespace TerminalApi
 			}
 		}
 
+
 		/// <summary>
 		///  Automatically creates and adds <see cref="TerminalKeyword"/> to the terminal based on inputs given.
 		/// </summary>
@@ -74,6 +77,29 @@ namespace TerminalApi
 				AddTerminalKeyword(mainKeyword);
 			}
 		}
+
+		public static void AddCommand(Command command)
+		{
+			command.CommandWord = command.CommandWord.ToLower();
+			TerminalKeyword mainKeyword = CreateTerminalKeyword(command.CommandWord);
+			TerminalNode triggerNode = CreateTerminalNode("", command.ClearPreviousText);
+            if (command.VerbWord != null)
+            {
+                command.VerbWord = command.VerbWord.ToLower();
+                TerminalKeyword verbKeyword = CreateTerminalKeyword(command.VerbWord, true);
+                verbKeyword = verbKeyword.AddCompatibleNoun(mainKeyword, triggerNode);
+                mainKeyword.defaultVerb = verbKeyword;
+                AddTerminalKeyword(verbKeyword);
+                AddTerminalKeyword(mainKeyword);
+            }
+            else
+            {
+                mainKeyword.specialKeywordResult = triggerNode;
+                AddTerminalKeyword(mainKeyword);
+            }
+			command.TerminalNode = triggerNode;
+			Commands.Add(command);
+        }
 
 		/// <summary>
 		/// Creates a <see cref="TerminalKeyword"/>
@@ -128,7 +154,7 @@ namespace TerminalApi
 		/// Addes the keyword to the terminal's keywords
 		/// </summary>
 		/// <param name="terminalKeyword">The keyword to add</param>
-		public static void AddTerminalKeyword(TerminalKeyword terminalKeyword)
+		public static void AddTerminalKeyword(TerminalKeyword terminalKeyword, CommandInfo commandInfo = null)
 		{
 			if(IsInGame())
 			{
@@ -145,8 +171,19 @@ namespace TerminalApi
 			else
 			{
 				plugin.Log?.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
-				Action<TerminalKeyword> newAction = AddTerminalKeyword;
+				Action<TerminalKeyword, CommandInfo> newAction = AddTerminalKeyword;
 				DelayedAction delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
+				if(commandInfo != null)
+				{
+					delayedAction.CommandInfo = commandInfo;
+				}
+				else if(commandInfo == null && !terminalKeyword.isVerb)
+				{
+					delayedAction.CommandInfo = new()
+					{
+						Name = terminalKeyword.word.Substring(0, 1) + terminalKeyword.word.Substring(1)
+					};
+				}
 				QueuedActions.Add(delayedAction);
 			}
 		}

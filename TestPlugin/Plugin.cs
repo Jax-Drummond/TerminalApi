@@ -1,6 +1,4 @@
 ﻿using BepInEx;
-using System;
-using System.Collections.Concurrent;
 using TerminalApi;
 using static TerminalApi.Events.Events;
 using static TerminalApi.TerminalApi;
@@ -44,8 +42,24 @@ namespace TestPlugin
             AddTerminalKeyword(verbKeyword);
             AddTerminalKeyword(nounKeyword);
 
+			// Adds a new command/terminal keyword that is 'pop' and a callback function that will run when the node of the keyword is loaded
+            AddCommand(new("pop", () =>
+			{
+				Logger.LogWarning("Wowow, this ran.");
+				return "popped\n\n";
+			}));
+
+			// Or
+
+			AddCommand(new("push", CommandFunction));
 
         }
+
+		private string CommandFunction()
+		{
+			Logger.LogWarning("Code put here will run when terminal command is sent.");
+			return "Wait, you cannot push\n\n";
+		}
 
         private void OnTerminalTextChanged(object sender, TerminalTextChangedEventArgs e)
         {
