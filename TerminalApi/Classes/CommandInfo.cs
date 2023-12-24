@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TerminalApi.Classes
 {
     public class CommandInfo
-    {
-        public string Name { get; set; }
+    { 
         /// <summary>
         /// The category to display info on command
         /// </summary>
@@ -16,6 +11,19 @@ namespace TerminalApi.Classes
         /// <summary>
         /// The description of what the command does
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = "";
+
+        // For callbacks
+
+        /// <summary>
+        /// The node that will trigger your callback function
+        /// </summary>
+        public TerminalNode TriggerNode { get; set; }
+
+        /// <summary>
+        /// A function that should return the string that is wanted to be displayed
+        /// </summary>
+        public Func<string> DisplayTextSupplier { get; set; }
+
     }
 }

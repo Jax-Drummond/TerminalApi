@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Linq;
+using TerminalApi.Classes;
 
 namespace TerminalApi.Events
 {
@@ -14,11 +15,14 @@ namespace TerminalApi.Events
         [HarmonyPostfix]
 		public static void ParsePlayerSentence(ref Terminal __instance, TerminalNode __result)
         {
-            Command command = TerminalApi.Commands.FirstOrDefault(c => c.TerminalNode == __result);
-            if(command != null && command.DisplayTextSupplier != null)
+            CommandInfo commandInfo = TerminalApi.CommandInfos.FirstOrDefault(cI => cI.TriggerNode == __result);
+
+            // Calls callback function, if there is one
+            if (commandInfo != null)
             {
-                __result.displayText = command.DisplayTextSupplier();
+                __result.displayText = commandInfo?.DisplayTextSupplier();
             }
+           
             string submittedText = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
             TerminalParsedSentence?.Invoke((object)__instance, new() { Terminal = __instance, SubmittedText = submittedText, ReturnedNode = __result });
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TerminalApi.Classes;
+using TerminalApi.Interfaces;
 using TMPro;
 using UnityEngine;
 
@@ -14,9 +15,9 @@ namespace TerminalApi
 		/// </summary>
 		public static Plugin plugin;
 		
-		internal static List<DelayedAction> QueuedActions = new List<DelayedAction>();
+		internal static List<IDelayedAction> QueuedDelayedActions = new();
 
-		internal static List<Command> Commands = new List<Command>();
+		internal static List<CommandInfo> CommandInfos = new();
 		
 		/// <summary>
 		/// The ingame terminal script.
@@ -78,37 +79,47 @@ namespace TerminalApi
 			}
 		}
 
-		public static void AddCommand(Command command)
-		{
-			command.CommandWord = command.CommandWord.ToLower();
-			TerminalKeyword mainKeyword = CreateTerminalKeyword(command.CommandWord);
-			TerminalNode triggerNode = CreateTerminalNode("", command.ClearPreviousText);
-            if (command.VerbWord != null)
+        /// <summary>
+        ///  Automatically creates and adds <see cref="TerminalKeyword"/> to the terminal based on inputs given.
+        /// </summary>
+        /// <param name="commandWord">This is essentially the noun word. What needs to be entered to trigger the display text.</param>
+        /// <param name="displayText">The text to display when the command word is sent.</param>
+        /// <param name="verbWord">The word that comes before the command word. Will be set as default so you can still just enter the command word to trigger.</param>
+        /// <param name="clearPreviousText">Whether or not to clear the terminal after entering command.</param>
+        public static void AddCommand(string commandWord, CommandInfo commandInfo, string verbWord = null, bool clearPreviousText = true)
+        {
+            commandWord = commandWord.ToLower();
+            TerminalKeyword mainKeyword = CreateTerminalKeyword(commandWord);
+            TerminalNode triggerNode = CreateTerminalNode("", clearPreviousText);
+			
+			commandInfo.TriggerNode = triggerNode;
+
+            if (verbWord != null)
             {
-                command.VerbWord = command.VerbWord.ToLower();
-                TerminalKeyword verbKeyword = CreateTerminalKeyword(command.VerbWord, true);
+                verbWord = verbWord.ToLower();
+                TerminalKeyword verbKeyword = CreateTerminalKeyword(verbWord, true);
                 verbKeyword = verbKeyword.AddCompatibleNoun(mainKeyword, triggerNode);
                 mainKeyword.defaultVerb = verbKeyword;
                 AddTerminalKeyword(verbKeyword);
-                AddTerminalKeyword(mainKeyword);
+                AddTerminalKeyword(mainKeyword, commandInfo);
             }
             else
             {
                 mainKeyword.specialKeywordResult = triggerNode;
-                AddTerminalKeyword(mainKeyword);
+                AddTerminalKeyword(mainKeyword, commandInfo);
             }
-			command.TerminalNode = triggerNode;
-			Commands.Add(command);
         }
 
-		/// <summary>
-		/// Creates a <see cref="TerminalKeyword"/>
-		/// </summary>
-		/// <param name="word">The terminal command word</param>
-		/// <param name="isVerb">Whether the command word is a verb</param>
-		/// <param name="triggeringNode">The <see cref="TerminalNode"/> that runs when command word is sent.</param>
-		/// <returns>The newly created <see cref="TerminalKeyword"/></returns>
-		public static TerminalKeyword CreateTerminalKeyword(string word, bool isVerb = false, TerminalNode triggeringNode = null) 
+
+
+        /// <summary>
+        /// Creates a <see cref="TerminalKeyword"/>
+        /// </summary>
+        /// <param name="word">The terminal command word</param>
+        /// <param name="isVerb">Whether the command word is a verb</param>
+        /// <param name="triggeringNode">The <see cref="TerminalNode"/> that runs when command word is sent.</param>
+        /// <returns>The newly created <see cref="TerminalKeyword"/></returns>
+        public static TerminalKeyword CreateTerminalKeyword(string word, bool isVerb = false, TerminalNode triggeringNode = null) 
 		{
 			TerminalKeyword newKeyword = ScriptableObject.CreateInstance<TerminalKeyword>();
 			newKeyword.word = word.ToLower();
@@ -160,7 +171,23 @@ namespace TerminalApi
 			{
 				if (GetKeyword(terminalKeyword.word) is null)
 				{
-					Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
+					// Set object name
+					terminalKeyword.name = terminalKeyword.word.Substring(0, 1) + terminalKeyword.word.Substring(1);
+
+					// Setup callback
+					if(commandInfo?.DisplayTextSupplier is not null)
+					{
+						if(commandInfo?.TriggerNode is null)
+						{
+							commandInfo.TriggerNode = terminalKeyword.specialKeywordResult;
+						}
+						CommandInfos.Add(commandInfo);
+					}
+
+					// Setup command help info/description
+
+
+                    Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
 					plugin.Log?.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
 				}
 				else
@@ -172,19 +199,16 @@ namespace TerminalApi
 			{
 				plugin.Log?.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
 				Action<TerminalKeyword, CommandInfo> newAction = AddTerminalKeyword;
-				DelayedAction delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
+				DelayedAddTerminalKeyword delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
 				if(commandInfo != null)
 				{
 					delayedAction.CommandInfo = commandInfo;
 				}
 				else if(commandInfo == null && !terminalKeyword.isVerb)
 				{
-					delayedAction.CommandInfo = new()
-					{
-						Name = terminalKeyword.word.Substring(0, 1) + terminalKeyword.word.Substring(1)
-					};
+					delayedAction.CommandInfo = new();
 				}
-				QueuedActions.Add(delayedAction);
+				QueuedDelayedActions.Add(delayedAction);
 			}
 		}
 

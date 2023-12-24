@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using TerminalApi.Interfaces;
 
 namespace TerminalApi.Events
 {
@@ -14,14 +15,14 @@ namespace TerminalApi.Events
 		public static void Awake(ref Terminal __instance)
         {
             TerminalApi.Terminal = __instance;
-            if (TerminalApi.QueuedActions.Count > 0)
+            if (TerminalApi.QueuedDelayedActions.Count > 0)
             {
-				TerminalApi.plugin.Log?.LogMessage($"In game, now adding words.");
-                foreach (DelayedAction delayedAction in TerminalApi.QueuedActions)
+				TerminalApi.plugin.Log?.LogMessage($"In game, applying any changes now.");
+                foreach (IDelayedAction delayedAction in TerminalApi.QueuedDelayedActions)
                 {
                     delayedAction.Run();
                 }
-				TerminalApi.QueuedActions.Clear();
+				TerminalApi.QueuedDelayedActions.Clear();
             }
             TerminalAwake?.Invoke((object)__instance, new() { Terminal = __instance} );
         }
