@@ -41,6 +41,7 @@ namespace TestPlugin
             nounKeyword.defaultVerb = verbKeyword;
 
             AddTerminalKeyword(verbKeyword);
+			// The second parameter passed in is a CommandInfo, if you want to have a 
             AddTerminalKeyword(nounKeyword, new() { 
 				TriggerNode = triggerNode,
 				DisplayTextSupplier = () =>
@@ -51,19 +52,22 @@ namespace TestPlugin
 			});
 
 			// Adds a new command/terminal keyword that is 'pop' and a callback function that will run when the node of the keyword is loaded
-            AddCommand("pop", new CommandInfo() {
+			AddCommand("pop", new CommandInfo()
+			{
 				DisplayTextSupplier = () =>
-                {
-                    Logger.LogWarning("Wowow, this ran.");
-                    return "popped\n\n";
-                }
-            });
+				{
+					Logger.LogWarning("Wowow, this ran.");
+					return "popped\n\n";
+				},
+				Category = "Misc"
+			}) ;
 
 			// Or
 
 			AddCommand("push", new CommandInfo()
 			{
-				DisplayTextSupplier = CommandFunction
+				DisplayTextSupplier = CommandFunction,
+				Category = "Misc"
 			});
         }
 

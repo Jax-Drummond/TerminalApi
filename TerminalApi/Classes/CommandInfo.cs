@@ -3,7 +3,11 @@
 namespace TerminalApi.Classes
 {
     public class CommandInfo
-    { 
+    {
+        /// <summary>
+        /// The title of the description. e.g For '>SCAN,'SCAN' would be the title
+        /// </summary>
+        public string Title { get; set; } = null;
         /// <summary>
         /// The category to display info on command
         /// </summary>

@@ -24,6 +24,8 @@ namespace TerminalApi
 		/// </summary>
 		public static Terminal Terminal { get; internal set; }
 
+		public static List<TerminalNode> SpecialNodes => Terminal.terminalNodes.specialNodes;
+
 		/// <summary>
 		/// The string of the currently displayed text
 		/// </summary>
@@ -171,11 +173,8 @@ namespace TerminalApi
 			{
 				if (GetKeyword(terminalKeyword.word) is null)
 				{
-					// Set object name
-					terminalKeyword.name = terminalKeyword.word.Substring(0, 1) + terminalKeyword.word.Substring(1);
-
-					// Setup callback
-					if(commandInfo?.DisplayTextSupplier is not null)
+                    // Setup callback
+                    if (commandInfo?.DisplayTextSupplier is not null)
 					{
 						if(commandInfo?.TriggerNode is null)
 						{
@@ -185,7 +184,18 @@ namespace TerminalApi
 					}
 
 					// Setup command help info/description
-
+					if (!terminalKeyword.isVerb && commandInfo is not null)
+					{
+						// Set object name
+						terminalKeyword.name = commandInfo.Title ?? terminalKeyword.word.Substring(0, 1).ToUpper() + terminalKeyword.word.Substring(1);
+						string newEntry = $">{terminalKeyword.name.ToUpper()}\n{commandInfo.Description}\n\n";
+                        var category = GetKeyword(commandInfo.Category.ToLower());
+						if (category != null)
+						{
+							category.specialKeywordResult.displayText = category.specialKeywordResult.displayText.TrimEnd() + "\n\n" + newEntry;
+                        }
+				
+					}
 
                     Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
 					plugin.Log?.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
@@ -200,14 +210,6 @@ namespace TerminalApi
 				plugin.Log?.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
 				Action<TerminalKeyword, CommandInfo> newAction = AddTerminalKeyword;
 				DelayedAddTerminalKeyword delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
-				if(commandInfo != null)
-				{
-					delayedAction.CommandInfo = commandInfo;
-				}
-				else if(commandInfo == null && !terminalKeyword.isVerb)
-				{
-					delayedAction.CommandInfo = new();
-				}
 				QueuedDelayedActions.Add(delayedAction);
 			}
 		}
