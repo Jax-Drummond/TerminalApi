@@ -184,17 +184,12 @@ namespace TerminalApi
 					}
 
 					// Setup command help info/description
-					if (!terminalKeyword.isVerb && commandInfo is not null)
+					if (commandInfo is not null)
 					{
 						// Set object name
 						terminalKeyword.name = commandInfo.Title ?? terminalKeyword.word.Substring(0, 1).ToUpper() + terminalKeyword.word.Substring(1);
-						string newEntry = $">{terminalKeyword.name.ToUpper()}\n{commandInfo.Description}\n\n";
-                        var category = GetKeyword(commandInfo.Category.ToLower());
-						if (category != null)
-						{
-							category.specialKeywordResult.displayText = category.specialKeywordResult.displayText.TrimEnd() + "\n\n" + newEntry;
-                        }
-				
+						string newEntry = $"\n>{terminalKeyword.name.ToUpper()}\n{commandInfo.Description ?? ""}\n\n";
+						NodeAppendLine(commandInfo.Category, newEntry);
 					}
 
                     Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
@@ -209,8 +204,29 @@ namespace TerminalApi
 			{
 				plugin.Log?.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
 				Action<TerminalKeyword, CommandInfo> newAction = AddTerminalKeyword;
-				DelayedAddTerminalKeyword delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
+				DelayedAddTerminalKeyword delayedAction = new() { Action = newAction, Keyword = terminalKeyword, CommandInfo = commandInfo };
 				QueuedDelayedActions.Add(delayedAction);
+			}
+		}
+
+		/// <summary>
+		/// Appends a line of text to a node
+		/// </summary>
+		/// <param name="word">The word of the node</param>
+		/// <param name="text">The text to append</param>
+		public static void NodeAppendLine(string word, string text)
+		{
+			if (IsInGame())
+			{
+				TerminalKeyword terminalKeyword = GetKeyword(word.ToLower());
+				if(terminalKeyword != null)
+				{
+					terminalKeyword.specialKeywordResult.displayText = terminalKeyword.specialKeywordResult.displayText.Trim() + "\n" + text;
+				}
+				else
+				{
+                    plugin.Log?.LogWarning($"Failed to add text to {word}. Does not exist.");
+                }
 			}
 		}
 

@@ -48,7 +48,9 @@ namespace TestPlugin
 				{
 					Logger.LogWarning("Put code here, and it will run when trigger node is loaded");
 					return "This text will display";
-				}
+				},
+				Category = "Other",
+				Description = "This is just a test command."
 			});
 
 			// Adds a new command/terminal keyword that is 'pop' and a callback function that will run when the node of the keyword is loaded
@@ -59,8 +61,8 @@ namespace TestPlugin
 					Logger.LogWarning("Wowow, this ran.");
 					return "popped\n\n";
 				},
-				Category = "Misc"
-			}) ;
+				Category = "Other"
+			});
 
 			// Or
 
@@ -100,6 +102,9 @@ namespace TestPlugin
         private void TerminalIsAwake(object sender, TerminalEventArgs e)
 		{
 			Logger.LogMessage("Terminal is awake");
+
+			// Adds 'Hello' as a new line to the help node
+			NodeAppendLine("help", "\nHello");
         }
 
 		private void TerminalIsWaking(object sender, TerminalEventArgs e)
