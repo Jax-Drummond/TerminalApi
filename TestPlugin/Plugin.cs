@@ -41,7 +41,8 @@ namespace TestPlugin
             nounKeyword.defaultVerb = verbKeyword;
 
             AddTerminalKeyword(verbKeyword);
-			// The second parameter passed in is a CommandInfo, if you want to have a 
+
+			// The second parameter passed in is a CommandInfo, if you want to have a callback.
             AddTerminalKeyword(nounKeyword, new() { 
 				TriggerNode = triggerNode,
 				DisplayTextSupplier = () =>
@@ -51,6 +52,7 @@ namespace TestPlugin
 				},
 				Category = "Other",
 				Description = "This is just a test command."
+				// The above would look like '>FRANK\nThis is just a test command.' in Other
 			});
 
 			// Adds a new command/terminal keyword that is 'pop' and a callback function that will run when the node of the keyword is loaded
@@ -69,7 +71,7 @@ namespace TestPlugin
 			AddCommand("push", new CommandInfo()
 			{
 				DisplayTextSupplier = CommandFunction,
-				Category = "Misc"
+				Category = "Misc" // Does not work for categories that do not exist, yet ;)
 			});
         }
 

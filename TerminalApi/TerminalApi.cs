@@ -164,34 +164,15 @@ namespace TerminalApi
 		}
 
 		/// <summary>
-		/// Addes the keyword to the terminal's keywords
+		/// Adds the keyword to the terminal's keywords
 		/// </summary>
 		/// <param name="terminalKeyword">The keyword to add</param>
-		public static void AddTerminalKeyword(TerminalKeyword terminalKeyword, CommandInfo commandInfo = null)
+		public static void AddTerminalKeyword(TerminalKeyword terminalKeyword)
 		{
 			if(IsInGame())
 			{
 				if (GetKeyword(terminalKeyword.word) is null)
 				{
-                    // Setup callback
-                    if (commandInfo?.DisplayTextSupplier is not null)
-					{
-						if(commandInfo?.TriggerNode is null)
-						{
-							commandInfo.TriggerNode = terminalKeyword.specialKeywordResult;
-						}
-						CommandInfos.Add(commandInfo);
-					}
-
-					// Setup command help info/description
-					if (commandInfo is not null)
-					{
-						// Set object name
-						terminalKeyword.name = commandInfo.Title ?? terminalKeyword.word.Substring(0, 1).ToUpper() + terminalKeyword.word.Substring(1);
-						string newEntry = $"\n>{terminalKeyword.name.ToUpper()}\n{commandInfo.Description ?? ""}\n\n";
-						NodeAppendLine(commandInfo.Category, newEntry);
-					}
-
                     Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
 					plugin.Log?.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
 				}
@@ -204,17 +185,64 @@ namespace TerminalApi
 			{
 				plugin.Log?.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
 				Action<TerminalKeyword, CommandInfo> newAction = AddTerminalKeyword;
-				DelayedAddTerminalKeyword delayedAction = new() { Action = newAction, Keyword = terminalKeyword, CommandInfo = commandInfo };
+				DelayedAddTerminalKeyword delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
 				QueuedDelayedActions.Add(delayedAction);
 			}
 		}
 
-		/// <summary>
-		/// Appends a line of text to a node
-		/// </summary>
-		/// <param name="word">The word of the node</param>
-		/// <param name="text">The text to append</param>
-		public static void NodeAppendLine(string word, string text)
+        /// <summary>
+        /// Adds the keyword to the terminal's keywords
+        /// </summary>
+        /// <param name="terminalKeyword">The keyword to add</param>
+		/// <param name="commandInfo">The info of the keyword</param>
+        public static void AddTerminalKeyword(TerminalKeyword terminalKeyword, CommandInfo commandInfo = null)
+        {
+            if (IsInGame())
+            {
+                if (GetKeyword(terminalKeyword.word) is null)
+                {
+                    // Setup callback
+                    if (commandInfo?.DisplayTextSupplier is not null)
+                    {
+                        if (commandInfo?.TriggerNode is null)
+                        {
+                            commandInfo.TriggerNode = terminalKeyword.specialKeywordResult;
+                        }
+                        CommandInfos.Add(commandInfo);
+                    }
+
+                    // Setup command help info/description
+                    if (commandInfo is not null)
+                    {
+                        // Set object name
+                        terminalKeyword.name = commandInfo.Title ?? terminalKeyword.word.Substring(0, 1).ToUpper() + terminalKeyword.word.Substring(1);
+                        string newEntry = $"\n>{terminalKeyword.name.ToUpper()}\n{commandInfo.Description ?? ""}\n\n";
+                        NodeAppendLine(commandInfo.Category, newEntry);
+                    }
+
+                    Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
+                    plugin.Log?.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
+                }
+                else
+                {
+                    plugin.Log?.LogWarning($"Failed to add {terminalKeyword.word} keyword. Already exists.");
+                }
+            }
+            else
+            {
+                plugin.Log?.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
+                Action<TerminalKeyword, CommandInfo> newAction = AddTerminalKeyword;
+                DelayedAddTerminalKeyword delayedAction = new() { Action = newAction, Keyword = terminalKeyword, CommandInfo = commandInfo };
+                QueuedDelayedActions.Add(delayedAction);
+            }
+        }
+
+        /// <summary>
+        /// Appends a line of text to a node
+        /// </summary>
+        /// <param name="word">The word of the node</param>
+        /// <param name="text">The text to append</param>
+        public static void NodeAppendLine(string word, string text)
 		{
 			if (IsInGame())
 			{
