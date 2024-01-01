@@ -1,7 +1,6 @@
 ﻿using BepInEx;
-using System;
-using System.Collections.Concurrent;
 using TerminalApi;
+using TerminalApi.Classes;
 using static TerminalApi.Events.Events;
 using static TerminalApi.TerminalApi;
 
@@ -42,10 +41,41 @@ namespace TestPlugin
             nounKeyword.defaultVerb = verbKeyword;
 
             AddTerminalKeyword(verbKeyword);
-            AddTerminalKeyword(nounKeyword);
+			// The second parameter passed in is a CommandInfo, if you want to have a 
+            AddTerminalKeyword(nounKeyword, new() { 
+				TriggerNode = triggerNode,
+				DisplayTextSupplier = () =>
+				{
+					Logger.LogWarning("Put code here, and it will run when trigger node is loaded");
+					return "This text will display";
+				}
+			});
 
+			// Adds a new command/terminal keyword that is 'pop' and a callback function that will run when the node of the keyword is loaded
+			AddCommand("pop", new CommandInfo()
+			{
+				DisplayTextSupplier = () =>
+				{
+					Logger.LogWarning("Wowow, this ran.");
+					return "popped\n\n";
+				},
+				Category = "Misc"
+			}) ;
 
+			// Or
+
+			AddCommand("push", new CommandInfo()
+			{
+				DisplayTextSupplier = CommandFunction,
+				Category = "Misc"
+			});
         }
+
+		private string CommandFunction()
+		{
+			Logger.LogWarning("Code put here will run when terminal command is sent.");
+			return "Wait, you cannot push\n\n";
+		}
 
         private void OnTerminalTextChanged(object sender, TerminalTextChangedEventArgs e)
         {
@@ -70,7 +100,7 @@ namespace TestPlugin
         private void TerminalIsAwake(object sender, TerminalEventArgs e)
 		{
 			Logger.LogMessage("Terminal is awake");
-		}
+        }
 
 		private void TerminalIsWaking(object sender, TerminalEventArgs e)
 		{

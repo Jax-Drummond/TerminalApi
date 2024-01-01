@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using TerminalApi.Classes;
+using TerminalApi.Interfaces;
 using TMPro;
 using UnityEngine;
 
@@ -14,12 +15,16 @@ namespace TerminalApi
 		/// </summary>
 		public static Plugin plugin;
 		
-		internal static List<DelayedAction> QueuedActions = new List<DelayedAction>();
+		internal static List<IDelayedAction> QueuedDelayedActions = new();
+
+		internal static List<CommandInfo> CommandInfos = new();
 		
 		/// <summary>
 		/// The ingame terminal script.
 		/// </summary>
 		public static Terminal Terminal { get; internal set; }
+
+		public static List<TerminalNode> SpecialNodes => Terminal.terminalNodes.specialNodes;
 
 		/// <summary>
 		/// The string of the currently displayed text
@@ -46,6 +51,7 @@ namespace TerminalApi
 				return false;
 			}
 		}
+
 
 		/// <summary>
 		///  Automatically creates and adds <see cref="TerminalKeyword"/> to the terminal based on inputs given.
@@ -75,14 +81,47 @@ namespace TerminalApi
 			}
 		}
 
-		/// <summary>
-		/// Creates a <see cref="TerminalKeyword"/>
-		/// </summary>
-		/// <param name="word">The terminal command word</param>
-		/// <param name="isVerb">Whether the command word is a verb</param>
-		/// <param name="triggeringNode">The <see cref="TerminalNode"/> that runs when command word is sent.</param>
-		/// <returns>The newly created <see cref="TerminalKeyword"/></returns>
-		public static TerminalKeyword CreateTerminalKeyword(string word, bool isVerb = false, TerminalNode triggeringNode = null) 
+        /// <summary>
+        ///  Automatically creates and adds <see cref="TerminalKeyword"/> to the terminal based on inputs given.
+        /// </summary>
+        /// <param name="commandWord">This is essentially the noun word. What needs to be entered to trigger the display text.</param>
+        /// <param name="displayText">The text to display when the command word is sent.</param>
+        /// <param name="verbWord">The word that comes before the command word. Will be set as default so you can still just enter the command word to trigger.</param>
+        /// <param name="clearPreviousText">Whether or not to clear the terminal after entering command.</param>
+        public static void AddCommand(string commandWord, CommandInfo commandInfo, string verbWord = null, bool clearPreviousText = true)
+        {
+            commandWord = commandWord.ToLower();
+            TerminalKeyword mainKeyword = CreateTerminalKeyword(commandWord);
+            TerminalNode triggerNode = CreateTerminalNode("", clearPreviousText);
+			
+			commandInfo.TriggerNode = triggerNode;
+
+            if (verbWord != null)
+            {
+                verbWord = verbWord.ToLower();
+                TerminalKeyword verbKeyword = CreateTerminalKeyword(verbWord, true);
+                verbKeyword = verbKeyword.AddCompatibleNoun(mainKeyword, triggerNode);
+                mainKeyword.defaultVerb = verbKeyword;
+                AddTerminalKeyword(verbKeyword);
+                AddTerminalKeyword(mainKeyword, commandInfo);
+            }
+            else
+            {
+                mainKeyword.specialKeywordResult = triggerNode;
+                AddTerminalKeyword(mainKeyword, commandInfo);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Creates a <see cref="TerminalKeyword"/>
+        /// </summary>
+        /// <param name="word">The terminal command word</param>
+        /// <param name="isVerb">Whether the command word is a verb</param>
+        /// <param name="triggeringNode">The <see cref="TerminalNode"/> that runs when command word is sent.</param>
+        /// <returns>The newly created <see cref="TerminalKeyword"/></returns>
+        public static TerminalKeyword CreateTerminalKeyword(string word, bool isVerb = false, TerminalNode triggeringNode = null) 
 		{
 			TerminalKeyword newKeyword = ScriptableObject.CreateInstance<TerminalKeyword>();
 			newKeyword.word = word.ToLower();
@@ -128,26 +167,50 @@ namespace TerminalApi
 		/// Addes the keyword to the terminal's keywords
 		/// </summary>
 		/// <param name="terminalKeyword">The keyword to add</param>
-		public static void AddTerminalKeyword(TerminalKeyword terminalKeyword)
+		public static void AddTerminalKeyword(TerminalKeyword terminalKeyword, CommandInfo commandInfo = null)
 		{
 			if(IsInGame())
 			{
 				if (GetKeyword(terminalKeyword.word) is null)
 				{
-					Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
-					plugin.Log.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
+                    // Setup callback
+                    if (commandInfo?.DisplayTextSupplier is not null)
+					{
+						if(commandInfo?.TriggerNode is null)
+						{
+							commandInfo.TriggerNode = terminalKeyword.specialKeywordResult;
+						}
+						CommandInfos.Add(commandInfo);
+					}
+
+					// Setup command help info/description
+					if (!terminalKeyword.isVerb && commandInfo is not null)
+					{
+						// Set object name
+						terminalKeyword.name = commandInfo.Title ?? terminalKeyword.word.Substring(0, 1).ToUpper() + terminalKeyword.word.Substring(1);
+						string newEntry = $">{terminalKeyword.name.ToUpper()}\n{commandInfo.Description}\n\n";
+                        var category = GetKeyword(commandInfo.Category.ToLower());
+						if (category != null)
+						{
+							category.specialKeywordResult.displayText = category.specialKeywordResult.displayText.TrimEnd() + "\n\n" + newEntry;
+                        }
+				
+					}
+
+                    Terminal.terminalNodes.allKeywords = Terminal.terminalNodes.allKeywords.Add(terminalKeyword);
+					plugin.Log?.LogMessage($"Added {terminalKeyword.word} keyword to terminal keywords.");
 				}
 				else
 				{
-					plugin.Log.LogWarning($"Failed to add {terminalKeyword.word} keyword. Already exists.");
+					plugin.Log?.LogWarning($"Failed to add {terminalKeyword.word} keyword. Already exists.");
 				}
 			}
 			else
 			{
-				plugin.Log.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
-				Action<TerminalKeyword> newAction = AddTerminalKeyword;
-				DelayedAction delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
-				QueuedActions.Add(delayedAction);
+				plugin.Log?.LogMessage($"Not in game, waiting to be in game to add {terminalKeyword.word} keyword.");
+				Action<TerminalKeyword, CommandInfo> newAction = AddTerminalKeyword;
+				DelayedAddTerminalKeyword delayedAction = new() { Action = newAction, Keyword = terminalKeyword };
+				QueuedDelayedActions.Add(delayedAction);
 			}
 		}
 
@@ -184,7 +247,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"Failed to update {keyword.word}. Was not found in keywords.");
+				plugin.Log?.LogWarning($"Failed to update {keyword.word}. Was not found in keywords.");
 			}
 		}
 
@@ -206,11 +269,11 @@ namespace TerminalApi
 							Terminal.terminalNodes.allKeywords[j - 1] = Terminal.terminalNodes.allKeywords[j];
                         }
 						Array.Resize(ref Terminal.terminalNodes.allKeywords, newSize);
-                        plugin.Log.LogMessage($"{word} was deleted successfully.");
+                        plugin.Log?.LogMessage($"{word} was deleted successfully.");
                         return;
                     }
                 }
-                plugin.Log.LogWarning($"Failed to delete {word}. Was not found in keywords.");
+                plugin.Log?.LogWarning($"Failed to delete {word}. Was not found in keywords.");
             }
 		}
 
@@ -239,7 +302,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
+				plugin.Log?.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -269,7 +332,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
+				plugin.Log?.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -298,7 +361,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
+				plugin.Log?.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -328,7 +391,7 @@ namespace TerminalApi
 						return;
 					}
 				}
-				plugin.Log.LogWarning($"WARNING: No noun found for {verbKeyword}");
+				plugin.Log?.LogWarning($"WARNING: No noun found for {verbKeyword}");
 			}
 		}
 
@@ -378,7 +441,7 @@ namespace TerminalApi
 				TerminalKeyword nounKeyword = GetKeyword(noun);
 				if (verbTerminalKeyword == null) 
 				{ 
-					plugin.Log.LogWarning("The verb given does not exist."); 
+					plugin.Log?.LogWarning("The verb given does not exist."); 
 					return; 
 				}
 				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(nounKeyword, triggerNode);
@@ -400,7 +463,7 @@ namespace TerminalApi
 				TerminalKeyword nounKeyword = GetKeyword(noun);
 				if (verbTerminalKeyword == null) 
 				{ 
-					plugin.Log.LogWarning("The verb given does not exist."); 
+					plugin.Log?.LogWarning("The verb given does not exist."); 
 					return; 
 				}
 				verbTerminalKeyword = verbTerminalKeyword.AddCompatibleNoun(nounKeyword, displayText, clearPreviousText);
