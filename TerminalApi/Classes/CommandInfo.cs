@@ -11,11 +11,11 @@ namespace TerminalApi.Classes
         /// <summary>
         /// The category to display info on command
         /// </summary>
-        public string Category { get; set; } = "Other";
+        public string Category { get; set; }
         /// <summary>
         /// The description of what the command does
         /// </summary>
-        public string Description { get; set; } = "";
+        public string Description { get; set; }
 
         // For callbacks
 

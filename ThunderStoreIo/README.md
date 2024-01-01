@@ -1,4 +1,5 @@
 # TerminalApi
+## Please report any issues [here](https://github.com/NotAtomicBomb/TerminalApi/issues)
 
 ## Overview
 
@@ -16,10 +17,13 @@ Or just use the thuderstore mod loader, much easier.
 ## Table of Contents
 
 1. [Adding Commands](#adding-commands)
+2. [Callbacks](#callbacks)
+3. [Command Info](#command-info)
 2. [Events](#events)
 3. [Terminal Input](#terminal-input)
 1. [Creating Terminal Keywords](#creating-terminal-keywords)
 2. [Creating Terminal Nodes](#creating-terminal-nodes)
+2. [Adding Text To Nodes](#adding-text-to-nodes)
 3. [Adding Keywords](#adding-keywords)
 4. [Updating Keywords](#updating-keywords)
 5. [Deleting Keyword](#deleting-keywords)
@@ -35,8 +39,9 @@ Or just use the thuderstore mod loader, much easier.
 
 This api give you an easy way to add terminal commands via the `AddCommand` method.
 This methods returns nothing.
-There is one method:
-- `AddCommand(string commandWord, string displayText, string verbWord = null, bool clearPreviousText)`
+There are two methods:
+- `AddCommand(string commandWord, string displayText, string verbWord = null, bool clearPreviousText = true)`
+- `AddCommand(string commandWord, CommandInfo commandInfo, string verbWord = null, bool clearPreviousText = true)`
 
 Example:
 
@@ -44,6 +49,58 @@ Example:
     AddCommand("frank", "Frank is not here\n", "get", true)
 ```
 Will display `Frank is not here` when `get frank` or `frank` is sent in the terminal
+
+## Callbacks
+
+In 1.5.0 a way of adding callback functions was added. 
+The current way only works on commands/terminalkeywords that are being added.
+The callback function must return a string, that string is what will be displayed on the terminal when the
+command is run.
+
+There are two ways this can be achieved.
+
+```cs
+    AddTerminalKeyword(nounKeyword, new CommandInfo() {
+	TriggerNode = triggerNode,
+	DisplayTextSupplier = () =>
+	{
+		Logger.LogWarning("Put code here, and it will run when trigger node is loaded");
+		return "This text will display";
+	},
+	Category = "Other",
+	Description = "This is just a test command."
+});
+```
+
+Or
+
+```cs
+    AddCommand("pop", new CommandInfo()
+{
+	DisplayTextSupplier = () =>
+	{
+		Logger.LogWarning("Wowow, this ran.");
+		return "popped\n\n";
+	},
+	Category = "Other"
+});
+```
+
+## Command Info
+
+Also in 1.5.0 a Command Class was added ot help with adding callbacks and info about the command to any of the existing categories.
+Note: I do plan on handling categories that don't exist being automatically created, but that will have to be another time.
+Any commands added with a category will append a line looking like this `>[Title]\n[Description]`
+
+The CommandInfo class has 5 properties
+
+- `Title` : The title of the command, can be null. If null, will try to use the terminalkeyword's word.
+- `Category` : The category that you want to add the info. Only works for existing categories like `other`.
+- `Description` : The description of your command.
+- `DisplayTextSupplier` : The callback function, needs to return a string.
+- `TriggerNode` : The node that will trigger the `DisplayTextSupplier`. Can be null. If null, will try to use the terminalkeyword.specialKeywordResult.
+
+
 
 ## Events
 
@@ -107,12 +164,30 @@ Example:
     TerminalNode node = TerminalApi.CreateTerminalNode("Hello world");
 ```
 
+## Adding Text To Nodes
+
+To add a line of text to an existing node, you can use `NodeAppendLine`. 
+It uses a keyword's word to get the node and then adds the given text as a new line.
+In its current state, it must be run while in a game like in the terminal awake function.
+
+There is one method available:
+- `NodeAppendLine(string word, string text)`
+
+Example:
+
+```cs
+    // Adds 'Hello' as a new line to the help node
+    NodeAppendLine("help", "\nHello");
+```
+
+
 ## Adding Keywords
 
 Once you have your keyword ready to add you can use the `AddTerminalKeyword` to add the keyword.
 
-There is one method available:
+There are two methods available:
 - `AddTerminalKeyword(TerminalKeyword terminalKeyword)`
+- `AddTerminalKeyword(TerminalKeyword terminalKeyword, CommandInfo commandInfo = null)`
 
 Example:
 

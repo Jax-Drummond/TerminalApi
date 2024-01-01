@@ -47,3 +47,13 @@
 - Added DeleteKeyword
 - Added GetTerminalInput
 - Added SetTerminalInput
+
+## Version 1.5.0
+
+- Added CommandInfo class
+- CommandInfo allows for adding callbacks functions
+- Added AddCommand overload that accepts CommandInfo
+- Added AddTerminalKeyword overload that also accepts CommandInfo
+- Added a config option that allows users to disable TerminalApi logs
+- Added NodeAppendLine, appends a line of text to a node via its keyword
+
