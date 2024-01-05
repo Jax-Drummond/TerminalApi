@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFrameworks>netstandard2.1;net46</TargetFrameworks>
     <AssemblyName>TerminalApi</AssemblyName>
     <Description>Terminal Api for the terminal in Lethal Company</Description>
     <Version>1.5.1</Version>
