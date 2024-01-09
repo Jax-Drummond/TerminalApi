@@ -26,6 +26,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\TerminalApi\TerminalApi.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
@@ -33,10 +37,6 @@
     <Reference Include="netstandard">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\netstandard.dll</HintPath>
       <Private>false</Private>
-    </Reference>
-    <Reference Include="TerminalApi">
-      <HintPath>..\TerminalApi\obj\Debug\net46\TerminalApi.dll</HintPath>
-    <Private>false</Private>
     </Reference>
     <Reference Include="Unity.Netcode.Runtime">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.Netcode.Runtime.dll</HintPath>
