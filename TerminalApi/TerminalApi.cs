@@ -217,6 +217,7 @@ namespace TerminalApi
                         // Set object name
                         terminalKeyword.name = commandInfo.Title ?? terminalKeyword.word.Substring(0, 1).ToUpper() + terminalKeyword.word.Substring(1);
                         string newEntry = $"\n>{terminalKeyword.name.ToUpper()}\n{commandInfo.Description ?? ""}\n\n";
+                        commandInfo.Category ??= "Other";
                         NodeAppendLine(commandInfo.Category, newEntry);
                     }
 
