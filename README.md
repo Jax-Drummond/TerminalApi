@@ -1,5 +1,6 @@
 # TerminalApi
 ## Please report any issues [here](https://github.com/NotAtomicBomb/TerminalApi/issues)
+## Have the [Glowstick](https://thunderstore.io/c/lethal-company/p/Asylud/Glowstick/) mod and are unable to leave the terminal? [Try This](https://github.com/NotAtomicBomb/TerminalApi/issues/19#issuecomment-1898774242)
 
 ## Overview
 

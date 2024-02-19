@@ -4,7 +4,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>TerminalApi</AssemblyName>
     <Description>Terminal Api for the terminal in Lethal Company</Description>
-    <Version>1.5.1</Version>
+    <Version>1.5.2</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RestoreAdditionalProjectSources>
