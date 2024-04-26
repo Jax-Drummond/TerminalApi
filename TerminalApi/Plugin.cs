@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace TerminalApi
 {
-	[BepInPlugin("atomic.terminalapi", "Terminal Api", "1.5.0")]
+	[BepInPlugin("atomic.terminalapi", "Terminal Api", "1.5.4")]
 	public partial class Plugin : BaseUnityPlugin
 	{
 		public ManualLogSource Log;

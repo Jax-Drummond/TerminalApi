@@ -168,7 +168,7 @@ Example:
 ## Adding Text To Nodes
 
 To add a line of text to an existing node, you can use `NodeAppendLine`. 
-It uses a keyword's word to get the node and then adds the given text as a new line.
+It uses a keyword's word to get the node and then adds the given text as a new line. If the word you are trying to append to gets its text via a verb's compatible noun, then this will not work.
 In its current state, it must be run while in a game like in the terminal awake function.
 
 There is one method available:

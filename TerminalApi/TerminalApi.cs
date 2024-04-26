@@ -239,7 +239,7 @@ namespace TerminalApi
         }
 
         /// <summary>
-        /// Appends a line of text to a node
+        /// Appends a line of text to a node. Currently unable to do with words that have text displayed from a verb's compatible nouns.
         /// </summary>
         /// <param name="word">The word of the node</param>
         /// <param name="text">The text to append</param>
@@ -247,10 +247,16 @@ namespace TerminalApi
 		{
 			if (IsInGame())
 			{
-				TerminalKeyword terminalKeyword = GetKeyword(word.ToLower());
+                TerminalKeyword terminalKeyword = GetKeyword(word.ToLower());
 				if(terminalKeyword != null)
 				{
-					terminalKeyword.specialKeywordResult.displayText = terminalKeyword.specialKeywordResult.displayText.Trim() + "\n" + text;
+					if (terminalKeyword.specialKeywordResult == null)
+					{
+                        plugin.Log?.LogWarning($"Failed to add text to {word}. Does not have specialKeywordResult.");
+						return;
+                    }
+
+                    terminalKeyword.specialKeywordResult.displayText = terminalKeyword.specialKeywordResult.displayText.Trim() + "\n" + text;
 				}
 				else
 				{

@@ -61,6 +61,10 @@
 
 - Updated README
 
-## Version 1.5.1
+## Version 1.5.2
 
 - Added Null Check for CommandInfo.Category in AddTerminalKeyword
+
+## Version 1.5.4
+
+- Fixed a bug with NodeAppendLine
