@@ -1,6 +1,6 @@
 {
     "name": "TerminalApi",
-    "version_number": "1.5.4",
+    "version_number": "1.5.5",
     "website_url": "https://github.com/Jax-Drummond/TerminalApi",
     "description": "A Terminal Api",
     "dependencies": [
