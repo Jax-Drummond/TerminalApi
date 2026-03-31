@@ -15,7 +15,21 @@ namespace TerminalApi
 		{
 			if (terminalKeyword.isVerb)
 			{
-				CompatibleNoun compatibleNoun = new CompatibleNoun() { noun = noun, result = result };
+				CompatibleNoun compatibleNoun;
+
+				var constructorArgs = typeof(CompatibleNoun).GetConstructor([typeof(TerminalKeyword), typeof(TerminalNode)]);
+
+                if (constructorArgs != null) 
+				{
+                    compatibleNoun = (CompatibleNoun)constructorArgs.Invoke([noun, result]);
+                }
+				else
+				{
+                    compatibleNoun = (CompatibleNoun)Activator.CreateInstance(typeof(CompatibleNoun));
+                    compatibleNoun.noun = noun;
+                    compatibleNoun.result = result;
+                }
+                
 				if(terminalKeyword.compatibleNouns == null)
 				{
 					terminalKeyword.compatibleNouns = new CompatibleNoun[1] { compatibleNoun };
@@ -40,7 +54,21 @@ namespace TerminalApi
 		{
 			if (terminalKeyword.isVerb)
 			{
-				CompatibleNoun compatibleNoun = new CompatibleNoun() { noun = TerminalApi.CreateTerminalKeyword(noun), result = result };
+                CompatibleNoun compatibleNoun;
+
+                var constructorArgs = typeof(CompatibleNoun).GetConstructor([typeof(TerminalKeyword), typeof(TerminalNode)]);
+
+                if (constructorArgs != null)
+                {
+                    compatibleNoun = (CompatibleNoun)constructorArgs.Invoke([TerminalApi.CreateTerminalKeyword(noun), result]);
+                }
+                else
+                {
+                    compatibleNoun = (CompatibleNoun)Activator.CreateInstance(typeof(CompatibleNoun));
+                    compatibleNoun.noun = TerminalApi.CreateTerminalKeyword(noun);
+                    compatibleNoun.result = result;
+                }
+
 				if (terminalKeyword.compatibleNouns == null)
 				{
 					terminalKeyword.compatibleNouns = new CompatibleNoun[1] { compatibleNoun };
@@ -65,7 +93,21 @@ namespace TerminalApi
 		{
 			if (terminalKeyword.isVerb)
 			{
-				CompatibleNoun compatibleNoun = new CompatibleNoun() { noun = TerminalApi.CreateTerminalKeyword(noun), result = TerminalApi.CreateTerminalNode(displayText) };
+                CompatibleNoun compatibleNoun;
+
+                var constructorArgs = typeof(CompatibleNoun).GetConstructor([typeof(TerminalKeyword), typeof(TerminalNode)]);
+
+                if (constructorArgs != null)
+                {
+                    compatibleNoun = (CompatibleNoun)constructorArgs.Invoke([TerminalApi.CreateTerminalKeyword(noun), TerminalApi.CreateTerminalNode(displayText)]);
+                }
+                else
+                {
+                    compatibleNoun = (CompatibleNoun)Activator.CreateInstance(typeof(CompatibleNoun));
+                    compatibleNoun.noun = TerminalApi.CreateTerminalKeyword(noun);
+                    compatibleNoun.result = TerminalApi.CreateTerminalNode(displayText);
+                }
+
 				if (terminalKeyword.compatibleNouns == null)
 				{
 					terminalKeyword.compatibleNouns = new CompatibleNoun[1] { compatibleNoun };
@@ -90,7 +132,21 @@ namespace TerminalApi
 		{
 			if (terminalKeyword.isVerb)
 			{
-				CompatibleNoun compatibleNoun = new CompatibleNoun() { noun = noun, result = TerminalApi.CreateTerminalNode(displayText, clearPreviousText) };
+                CompatibleNoun compatibleNoun;
+
+                var constructorArgs = typeof(CompatibleNoun).GetConstructor([typeof(TerminalKeyword), typeof(TerminalNode)]);
+
+                if (constructorArgs != null)
+                {
+                    compatibleNoun = (CompatibleNoun)constructorArgs.Invoke([noun, TerminalApi.CreateTerminalNode(displayText, clearPreviousText)]);
+                }
+                else
+                {
+                    compatibleNoun = (CompatibleNoun)Activator.CreateInstance(typeof(CompatibleNoun));
+                    compatibleNoun.noun = noun;
+                    compatibleNoun.result = TerminalApi.CreateTerminalNode(displayText, clearPreviousText);
+                }
+
 				if (terminalKeyword.compatibleNouns == null)
 				{
 					terminalKeyword.compatibleNouns = new CompatibleNoun[1] { compatibleNoun };
